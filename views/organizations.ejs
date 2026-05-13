@@ -3,7 +3,25 @@
     <h2><%= pageTitle %></h2>
     <p>Here are some of the wonderful organizations we work with.</p>
     
-    <img src="/images/voluntarios.jpg" alt="Equipe de voluntários" style="max-width: 100%; border-radius: 8px;">
+    <div class="org-grid">
+        <article class="org-card">
+            <img src="/images/org1.jpg" alt="Logo da Organização 1">
+            <h3>Red Cross</h3>
+            <p>Providing emergency assistance, disaster relief, and disaster preparedness education to our communities.</p>
+        </article>
+
+        <article class="org-card">
+            <img src="/images/org2.jpg" alt="Logo da Organização 2">
+            <h3>Habitat for Humanity</h3>
+            <p>Building strength, stability, and self-reliance in partnership with families in need of housing.</p>
+        </article>
+
+        <article class="org-card">
+            <img src="/images/org3.jpg" alt="Logo da Organização 3">
+            <h3>Local Food Bank</h3>
+            <p>Working to end hunger by providing food, information, and support for community survival.</p>
+        </article>
+    </div>
 
 </main>
 <%- include('partials/footer') %>
