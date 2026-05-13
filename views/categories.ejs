@@ -3,10 +3,9 @@
     <h2><%= pageTitle %></h2>
     <div class="category-list">
         <ul>
-            <li>Environmental</li>
-            <li>Educational</li>
-            <li>Community Service</li>
-            <li>Health and Wellness</li>
+            <% categories.forEach(function(category) { %>
+                <li><%= category.category_name %></li>
+            <% }) %>
         </ul>
     </div>
 </main>

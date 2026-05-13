@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+// IMPORTANTE: Importando a função que busca as categorias no banco de dados
+import { getCategories } from './src/models/categories.js';
 
 dotenv.config();
 
@@ -47,11 +49,16 @@ app.get('/projects', async (req, res) => {
     }
 });
 
+// ROTA ATUALIZADA: Agora busca os dados dinâmicos do banco
 app.get('/categories', async (req, res) => {
     try {
         const pageTitle = "Service Project Categories";
-        res.render('categories', { pageTitle });
+        const categoriesData = await getCategories(); // Puxa do banco
+        
+        // Envia as categorias para a tela EJS
+        res.render('categories', { pageTitle, categories: categoriesData });
     } catch (error) {
+        console.error("Erro na rota /categories:", error);
         res.status(500).send("Server Error");
     }
 });
