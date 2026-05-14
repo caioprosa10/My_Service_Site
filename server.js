@@ -12,11 +12,12 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Agora aponta diretamente para as pastas na raiz do projeto
+// Aponta diretamente para as pastas na raiz do projeto
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Rota Home
 app.get('/', async (req, res) => {
     try {
         res.render('home', { pageTitle: "Home" });
@@ -25,6 +26,7 @@ app.get('/', async (req, res) => {
     }
 });
 
+// Rota Categories
 app.get('/categories', async (req, res) => {
     try {
         const categoriesData = await getCategories(); 
@@ -38,7 +40,27 @@ app.get('/categories', async (req, res) => {
     }
 });
 
-// Se você tiver outras rotas (Organizations, Projects), coloque-as aqui...
+// --- NOVAS ROTAS ADICIONADAS ---
+
+// Rota Organizations
+app.get('/organizations', (req, res) => {
+    try {
+        // Se no futuro você for buscar do banco, a lógica entra aqui (igual fizemos em categories)
+        res.render('organizations', { pageTitle: "Organizations" });
+    } catch (error) {
+        res.status(500).send("Server Error");
+    }
+});
+
+// Rota Projects
+app.get('/projects', (req, res) => {
+    try {
+        // Se no futuro você for buscar do banco, a lógica entra aqui
+        res.render('projects', { pageTitle: "Service Projects" });
+    } catch (error) {
+        res.status(500).send("Server Error");
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
