@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getCategories } from './models/categories.js';
+import { getCategories } from './src/models/categories.js';
 
 dotenv.config();
 
@@ -12,10 +12,10 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// '../' sai da pasta src para achar a public e views
-app.use(express.static(path.join(__dirname, '../public')));
+// Agora aponta diretamente para as pastas na raiz do projeto
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../views'));
+app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', async (req, res) => {
     try {
@@ -38,7 +38,7 @@ app.get('/categories', async (req, res) => {
     }
 });
 
-// Outras rotas (Organizations, Projects) seguem o mesmo padrão...
+// Se você tiver outras rotas (Organizations, Projects), coloque-as aqui...
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
