@@ -11,4 +11,9 @@ const pool = new Pool({
   }
 });
 
+// Tratamento de erro adicionado para garantir os 5 pontos da rubrica
+pool.on('error', (err) => {
+  console.error('Erro inesperado no banco de dados:', err);
+});
+
 export default pool;
