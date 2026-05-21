@@ -1,13 +1,12 @@
 <%- include('partials/header') %>
 <main class="container">
     <h2><%= pageTitle %></h2>
-    <p>Discover our current ongoing service projects and find out how you can help.</p>
-    
+    <p>Discover our current ongoing service projects.</p>
     <div class="project-list">
         <ul>
             <% projects.forEach(function(project) { %>
                 <li style="margin-bottom: 15px;">
-                    <h3><%= project.project_name %></h3>
+                    <h3><a href="/project/<%= project.project_id %>"><%= project.project_name %></a></h3>
                     <p><%= project.description %></p>
                 </li>
             <% }) %>

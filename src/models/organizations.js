@@ -10,3 +10,13 @@ export async function getOrganizations() {
         throw error;
     }
 }
+export async function getOrganizationById(id) {
+    try {
+        const sql = "SELECT * FROM organizations WHERE organization_id = $1";
+        const result = await pool.query(sql, [id]);
+        return result.rows[0];
+    } catch (error) {
+        console.error("Erro ao buscar organização por ID:", error);
+        throw error;
+    }
+}

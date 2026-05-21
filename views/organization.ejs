@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+<main class="container">
+    <h2><%= organization.organization_name %></h2>
+    <p><%= organization.description %></p>
+    
+    <h3>Projects by this Organization:</h3>
+    <ul>
+        <% if (projects.length > 0) { %>
+            <% projects.forEach(function(project) { %>
+                <li>
+                    <a href="/project/<%= project.project_id %>"><%= project.project_name %></a>
+                </li>
+            <% }) %>
+        <% } else { %>
+            <li>No projects currently listed for this organization.</li>
+        <% } %>
+    </ul>
+</main>
+<%- include('partials/footer') %>

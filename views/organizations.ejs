@@ -1,16 +1,19 @@
 <%- include('partials/header') %>
 <main class="container">
     <h2><%= pageTitle %></h2>
-    <p>Here are some of the wonderful organizations we work with.</p>
-    
-    <div class="org-grid">
-        <% organizations.forEach(function(org) { %>
-            <article class="org-card">
-                <img src="/images/org<%= org.organization_id %>.jpg" alt="Logo de <%= org.organization_name %>" onerror="this.style.display='none'">
-                <h3><%= org.organization_name %></h3>
-                <p><%= org.description %></p>
-            </article>
-        <% }) %>
+    <div class="organization-list">
+        <ul>
+            <% organizations.forEach(function(org) { %>
+                <li style="margin-bottom: 20px; list-style-type: none;">
+                    
+                    <img src="/images/org<%= org.organization_id %>.jpg" alt="<%= org.organization_name %>" style="max-width: 200px; display: block; margin-bottom: 10px; border-radius: 8px;">
+                    
+                    <a href="/organization/<%= org.organization_id %>" style="font-size: 1.2rem; font-weight: bold;">
+                        <%= org.organization_name %>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>
     </div>
 </main>
 <%- include('partials/footer') %>
