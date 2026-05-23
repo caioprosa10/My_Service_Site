@@ -1,26 +1,20 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// IMPORTA AS ROTAS CENTRALIZADAS (MVC)
-import indexRouter from './src/routes/index.js';
-
-dotenv.config();
+import router from './src/routes/index.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-app.use(express.static(path.join(__dirname, 'public')));
+// Configura o EJS como motor de visualização (View Engine)
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src', 'views')); // Ajustado para 'src/views'
 
-// USA AS ROTAS
-app.use('/', indexRouter);
+// Ativa a pasta pública para o CSS e Imagens funcionarem
+app.use(express.static('public'));
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Processa dados de formulários
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Conecta todas as rotas
+app.use('/', router);
+
+// ESTA É A LINHA QUE ESTAVA FALTANDO/DANDO ERRO:
+export default app;
