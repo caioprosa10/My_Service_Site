@@ -15,7 +15,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Configuração de Sessão e Flash Messages (Obrigatório para a rubrica)
+// --- CONFIGURAÇÃO DE SESSÃO E FLASH MESSAGES (Obrigatório para a nota) ---
 app.use(session({
     secret: 'cse340_secret_key',
     resave: false,
@@ -23,14 +23,21 @@ app.use(session({
 }));
 app.use(flash());
 
-// Variáveis globais para as views acessarem as mensagens
+// Middleware: Repassa as mensagens de sucesso/erro para todas as telas (views)
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     next();
 });
+// --------------------------------------------------------------------------
 
 // Conecta todas as rotas
 app.use('/', router);
+
+// --- PORTA E INICIALIZAÇÃO DO SERVIDOR (CORREÇÃO PARA O RENDER NÃO DESLIGAR) ---
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
 export default app;
