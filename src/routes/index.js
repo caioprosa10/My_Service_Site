@@ -1,24 +1,44 @@
 import express from 'express';
-import { buildCategoriesPage, buildCategoryDetails } from '../controllers/categoryController.js';
-import { buildProjectsPage, buildProjectDetails } from '../controllers/projectController.js';
+import { 
+    buildCategoriesPage, 
+    buildCategoryDetails, 
+    buildNewCategory, 
+    createCategory, 
+    buildEditCategory, 
+    updateExistingCategory 
+} from '../controllers/categoryController.js';
+import { 
+    buildProjectsPage, 
+    buildProjectDetails, 
+    buildAssignCategories, 
+    assignCategoriesToProject 
+} from '../controllers/projectController.js';
+import { 
+    buildOrganizationsPage, 
+    buildOrganizationDetails 
+} from '../controllers/organizationController.js';
 
 const router = express.Router();
 
-// Rotas da Home
+// --- ROTAS DA HOME ---
 router.get('/', (req, res) => res.render('home', { pageTitle: "Home" }));
 
-// Rotas de Categorias
+// --- ROTAS DE CATEGORIAS ---
 router.get('/categories', buildCategoriesPage);
+router.get('/new-category', buildNewCategory);
+router.post('/new-category', createCategory);
+router.get('/edit-category/:id', buildEditCategory);
+router.post('/edit-category/:id', updateExistingCategory);
 router.get('/category/:id', buildCategoryDetails);
 
-// Rotas de Projetos
+// --- ROTAS DE PROJETOS ---
 router.get('/projects', buildProjectsPage);
+router.get('/project/:id/assign-categories', buildAssignCategories);
+router.post('/project/:id/assign-categories', assignCategoriesToProject);
 router.get('/project/:id', buildProjectDetails);
 
-export default router;
-// Adicione isto junto com os outros imports no topo:
-import { buildOrganizationsPage, buildOrganizationDetails } from '../controllers/organizationController.js';
-
-// Adicione isto junto com as suas outras rotas:
+// --- ROTAS DE ORGANIZAÇÕES ---
 router.get('/organizations', buildOrganizationsPage);
 router.get('/organization/:id', buildOrganizationDetails);
+
+export default router;

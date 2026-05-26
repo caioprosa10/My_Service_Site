@@ -10,6 +10,7 @@ export async function getProjects() {
         throw error;
     }
 }
+
 export async function getProjectById(id) {
     try {
         const sql = "SELECT * FROM projects WHERE project_id = $1";
@@ -35,6 +36,7 @@ export async function getProjectsByCategory(categoryId) {
         throw error;
     }
 }
+
 export async function getProjectsByOrganization(orgId) {
     try {
         const sql = "SELECT * FROM projects WHERE organization_id = $1";
@@ -43,5 +45,29 @@ export async function getProjectsByOrganization(orgId) {
     } catch (error) {
         console.error("Erro ao buscar projetos da organização:", error);
         throw error;
+    }
+}
+
+export async function updateProjectCategories(projectId, categoryIds) {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN'); 
+        
+        await client.query("DELETE FROM project_category WHERE project_id = $1", [projectId]);
+        
+        if (categoryIds && categoryIds.length > 0) {
+            const insertSql = "INSERT INTO project_category (project_id, category_id) VALUES ($1, $2)";
+            for (let categoryId of categoryIds) {
+                await client.query(insertSql, [projectId, categoryId]);
+            }
+        }
+        
+        await client.query('COMMIT'); 
+    } catch (error) {
+        await client.query('ROLLBACK'); 
+        console.error("Erro ao atualizar categorias do projeto:", error);
+        throw error;
+    } finally {
+        client.release();
     }
 }

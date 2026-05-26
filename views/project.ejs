@@ -3,6 +3,10 @@
     <h2><%= project.project_name %></h2>
     <p><%= project.description %></p>
     
+    <div style="margin: 20px 0;">
+        <a href="/project/<%= project.project_id %>/assign-categories" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Update Categories</a>
+    </div>
+
     <div class="tags" style="margin-top: 20px;">
         <strong>Category Tags:</strong>
         <% if (categories.length > 0) { %>

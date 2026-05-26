@@ -1,4 +1,6 @@
 import express from 'express';
+import session from 'express-session';
+import flash from 'connect-flash';
 import router from './src/routes/index.js';
 
 const app = express();
@@ -13,8 +15,23 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// --- CONFIGURAÇÃO DE SESSÃO E FLASH MESSAGES (Obrigatório para a nota) ---
+app.use(session({
+    secret: 'cse340_secret_key',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(flash());
+
+// Middleware: Repassa as mensagens de sucesso/erro para todas as telas (views)
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    next();
+});
+// --------------------------------------------------------------------------
+
 // Conecta todas as rotas
 app.use('/', router);
 
-// ESTA É A LINHA QUE ESTAVA FALTANDO/DANDO ERRO:
 export default app;
