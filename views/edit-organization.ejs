@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<main class="container">
+    <h2><%= pageTitle %></h2>
+    <% if (error_msg && error_msg.length > 0) { %>
+        <p style="color: red; font-weight: bold;"><%= error_msg %></p>
+    <% } %>
+    <form action="/edit-organization/<%= organization.organization_id %>" method="POST" style="max-width: 400px; margin-top: 20px;">
+        <div style="margin-bottom: 15px;">
+            <label for="organization_name" style="display: block; font-weight: bold;">Organization Name:</label>
+            <input type="text" id="organization_name" name="organization_name" value="<%= organization.organization_name %>" required minlength="3" maxlength="100" style="width: 100%; padding: 8px;">
+        </div>
+        <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">Update Organization</button>
+        <a href="/organizations" style="margin-left: 10px; color: #555; text-decoration: none;">Cancel</a>
+    </form>
+</main>
+<%- include('partials/footer') %>

@@ -1,16 +1,27 @@
 <%- include('partials/header') %>
 <main class="container">
     <h2><%= pageTitle %></h2>
+
+    <% if (success_msg && success_msg.length > 0) { %>
+        <p style="color: green; font-weight: bold;"><%= success_msg %></p>
+    <% } %>
+    <% if (error_msg && error_msg.length > 0) { %>
+        <p style="color: red; font-weight: bold;"><%= error_msg %></p>
+    <% } %>
+
+    <div style="margin-bottom: 20px;">
+        <a href="/new-organization" style="padding: 10px; background-color: #0056b3; color: white; text-decoration: none; border-radius: 5px;">Add New Organization</a>
+    </div>
+
     <div class="organization-list">
         <ul>
             <% organizations.forEach(function(org) { %>
                 <li style="margin-bottom: 20px; list-style-type: none;">
-                    
                     <img src="/images/org<%= org.organization_id %>.jpg" alt="<%= org.organization_name %>" style="max-width: 200px; display: block; margin-bottom: 10px; border-radius: 8px;">
-                    
                     <a href="/organization/<%= org.organization_id %>" style="font-size: 1.2rem; font-weight: bold;">
                         <%= org.organization_name %>
                     </a>
+                    <a href="/edit-organization/<%= org.organization_id %>" style="margin-left: 15px; font-size: 0.9rem; color: #d9534f;">[Edit]</a>
                 </li>
             <% }) %>
         </ul>

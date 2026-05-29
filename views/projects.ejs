@@ -2,11 +2,22 @@
 <main class="container">
     <h2><%= pageTitle %></h2>
     <p>Discover our current ongoing service projects.</p>
+
+    <% if (success_msg && success_msg.length > 0) { %> <p style="color: green; font-weight: bold;"><%= success_msg %></p> <% } %>
+    <% if (error_msg && error_msg.length > 0) { %> <p style="color: red; font-weight: bold;"><%= error_msg %></p> <% } %>
+
+    <div style="margin-bottom: 20px;">
+        <a href="/new-project" style="padding: 10px; background-color: #0056b3; color: white; text-decoration: none; border-radius: 5px;">Add New Project</a>
+    </div>
+
     <div class="project-list">
         <ul>
             <% projects.forEach(function(project) { %>
                 <li style="margin-bottom: 15px;">
-                    <h3><a href="/project/<%= project.project_id %>"><%= project.project_name %></a></h3>
+                    <h3>
+                        <a href="/project/<%= project.project_id %>"><%= project.project_name %></a>
+                        <a href="/edit-project/<%= project.project_id %>" style="margin-left: 10px; font-size: 0.9rem; color: #d9534f; font-weight: normal;">[Edit]</a>
+                    </h3>
                     <p><%= project.description %></p>
                 </li>
             <% }) %>

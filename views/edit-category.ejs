@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+<main class="container">
+    <h2><%= pageTitle %></h2>
+
+    <% if (error_msg && error_msg.length > 0) { %>
+        <p style="color: red; font-weight: bold;"><%= error_msg %></p>
+    <% } %>
+
+    <form action="/edit-category/<%= category.category_id %>" method="POST" style="max-width: 400px; margin-top: 20px;">
+        <div style="margin-bottom: 15px;">
+            <label for="category_name" style="display: block; font-weight: bold; margin-bottom: 5px;">Category Name:</label>
+            <input 
+                type="text" 
+                id="category_name" 
+                name="category_name" 
+                value="<%= category.category_name %>"
+                required 
+                minlength="3" 
+                maxlength="100"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
+            >
+        </div>
+        <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Update Category
+        </button>
+        <a href="/categories" style="margin-left: 10px; color: #555; text-decoration: none;">Cancel</a>
+    </form>
+</main>
+<%- include('partials/footer') %>

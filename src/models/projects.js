@@ -71,3 +71,24 @@ export async function updateProjectCategories(projectId, categoryIds) {
         client.release();
     }
 }
+export async function insertProject(projectName, description, organizationId) {
+    try {
+        const sql = "INSERT INTO projects (project_name, description, organization_id) VALUES ($1, $2, $3) RETURNING *";
+        const result = await pool.query(sql, [projectName, description, organizationId]);
+        return result.rows[0];
+    } catch (error) {
+        console.error("Erro ao inserir projeto:", error);
+        throw error;
+    }
+}
+
+export async function updateProject(projectId, projectName, description, organizationId) {
+    try {
+        const sql = "UPDATE projects SET project_name = $1, description = $2, organization_id = $3 WHERE project_id = $4 RETURNING *";
+        const result = await pool.query(sql, [projectName, description, organizationId, projectId]);
+        return result.rows[0];
+    } catch (error) {
+        console.error("Erro ao atualizar projeto:", error);
+        throw error;
+    }
+}

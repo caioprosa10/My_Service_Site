@@ -11,11 +11,19 @@ import {
     buildProjectsPage, 
     buildProjectDetails, 
     buildAssignCategories, 
-    assignCategoriesToProject 
+    assignCategoriesToProject,
+    buildNewProject,
+    createProject,
+    buildEditProject,
+    updateExistingProject
 } from '../controllers/projectController.js';
 import { 
     buildOrganizationsPage, 
-    buildOrganizationDetails 
+    buildOrganizationDetails,
+    buildNewOrganization,
+    createOrganization,
+    buildEditOrganization,
+    updateExistingOrganization
 } from '../controllers/organizationController.js';
 
 const router = express.Router();
@@ -31,14 +39,22 @@ router.get('/edit-category/:id', buildEditCategory);
 router.post('/edit-category/:id', updateExistingCategory);
 router.get('/category/:id', buildCategoryDetails);
 
+// --- ROTAS DE ORGANIZAÇÕES ---
+router.get('/organizations', buildOrganizationsPage);
+router.get('/new-organization', buildNewOrganization);
+router.post('/new-organization', createOrganization);
+router.get('/edit-organization/:id', buildEditOrganization);
+router.post('/edit-organization/:id', updateExistingOrganization);
+router.get('/organization/:id', buildOrganizationDetails);
+
 // --- ROTAS DE PROJETOS ---
 router.get('/projects', buildProjectsPage);
+router.get('/new-project', buildNewProject);
+router.post('/new-project', createProject);
+router.get('/edit-project/:id', buildEditProject);
+router.post('/edit-project/:id', updateExistingProject);
 router.get('/project/:id/assign-categories', buildAssignCategories);
 router.post('/project/:id/assign-categories', assignCategoriesToProject);
 router.get('/project/:id', buildProjectDetails);
-
-// --- ROTAS DE ORGANIZAÇÕES ---
-router.get('/organizations', buildOrganizationsPage);
-router.get('/organization/:id', buildOrganizationDetails);
 
 export default router;
