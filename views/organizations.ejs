@@ -1,30 +1,41 @@
 <%- include('partials/header') %>
-<main class="container">
+<main class="container" style="margin-top: 20px;">
     <h2><%= pageTitle %></h2>
-
-    <% if (success_msg && success_msg.length > 0) { %>
-        <p style="color: green; font-weight: bold;"><%= success_msg %></p>
+    
+    <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+        <p style="color: green; font-weight: bold; background-color: #d4edda; padding: 10px; border-radius: 4px; border: 1px solid #c3e6cb;"><%= success_msg %></p>
     <% } %>
-    <% if (error_msg && error_msg.length > 0) { %>
-        <p style="color: red; font-weight: bold;"><%= error_msg %></p>
+    <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+        <p style="color: red; font-weight: bold; background-color: #f8d7da; padding: 10px; border-radius: 4px; border: 1px solid #f5c6cb;"><%= error_msg %></p>
     <% } %>
 
     <div style="margin-bottom: 20px;">
-        <a href="/new-organization" style="padding: 10px; background-color: #0056b3; color: white; text-decoration: none; border-radius: 5px;">Add New Organization</a>
+        <a href="/new-organization" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;">Add New Organization</a>
     </div>
 
-    <div class="organization-list">
-        <ul>
-            <% organizations.forEach(function(org) { %>
-                <li style="margin-bottom: 20px; list-style-type: none;">
-                    <img src="/images/org<%= org.organization_id %>.jpg" alt="<%= org.organization_name %>" style="max-width: 200px; display: block; margin-bottom: 10px; border-radius: 8px;">
-                    <a href="/organization/<%= org.organization_id %>" style="font-size: 1.2rem; font-weight: bold;">
-                        <%= org.organization_name %>
-                    </a>
-                    <a href="/edit-organization/<%= org.organization_id %>" style="margin-left: 15px; font-size: 0.9rem; color: #d9534f;">[Edit]</a>
-                </li>
+    <div class="organizations-list">
+        <% if (organizations && organizations.length > 0) { %>
+            <% organizations.forEach(org => { %>
+                <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 15px; display: block; overflow: hidden;">
+                    <div style="float: left; margin-right: 20px; margin-bottom: 10px;">
+                        <img src="/images/<%= org.organization_image ? org.organization_image : 'org1.jpg' %>" 
+                             alt="<%= org.organization_name %>" 
+                             onerror="this.onerror=null; this.src='/images/org1.jpg';" 
+                             style="max-width: 150px; height: auto; border: 1px solid #eee; border-radius: 4px; padding: 4px; background: #fff; display: block;">
+                    </div>
+                    
+                    <div style="overflow: hidden;">
+                        <h3 style="margin-top: 0; margin-bottom: 10px;">
+                            <a href="/organization/<%= org.organization_id %>" style="color: #0056b3; text-decoration: none;"><%= org.organization_name %></a>
+                            <a href="/edit-organization/<%= org.organization_id %>" style="font-size: 0.75em; color: #dc3545; text-decoration: none; margin-left: 10px; font-weight: normal;">[Edit]</a>
+                        </h3>
+                        <p style="color: #555; margin-bottom: 0;"><%= org.organization_description || 'No description provided.' %></p>
+                    </div>
+                </div>
             <% }) %>
-        </ul>
+        <% } else { %>
+            <p style="color: #666; font-style: italic;">No partner organizations registered yet.</p>
+        <% } %>
     </div>
 </main>
 <%- include('partials/footer') %>

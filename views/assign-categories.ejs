@@ -1,25 +1,22 @@
 <%- include('partials/header') %>
 <main class="container">
     <h2><%= pageTitle %></h2>
-    <% if (error_msg && error_msg.length > 0) { %><p style="color: red; font-weight: bold;"><%= error_msg %></p><% } %>
-    
-    <form action="/project/<%= project.project_id %>/assign-categories" method="POST" style="margin-top: 20px;">
+    <p style="margin-bottom: 20px; color: #666;">Check the categories you want to assign to <strong><%= project.project_name %></strong>.</p>
+
+    <form action="/project/<%= project.project_id %>/assign-categories" method="POST" style="max-width: 500px; background-color: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 6px;">
         <div style="margin-bottom: 20px;">
-            <% allCategories.forEach(function(cat) { %>
-                <div style="margin-bottom: 8px;">
-                    <input 
-                        type="checkbox" 
-                        id="cat_<%= cat.category_id %>" 
-                        name="categories" 
-                        value="<%= cat.category_id %>"
-                        <%= currentCategoryIds.includes(cat.category_id) ? 'checked' : '' %>
-                    >
-                    <label for="cat_<%= cat.category_id %>" style="margin-left: 5px;"><%= cat.category_name %></label>
+            <% categories.forEach(category => { %>
+                <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                    <input type="checkbox" id="cat_<%= category.category_id %>" name="categories" value="<%= category.category_id %>" 
+                        <%= currentIds.includes(category.category_id.toString()) ? 'checked' : '' %> 
+                        style="width: 18px; height: 18px; margin-right: 10px; cursor: pointer;">
+                    <label for="cat_<%= category.category_id %>" style="font-size: 1.05em; cursor: pointer; user-select: none;"><%= category.category_name %></label>
                 </div>
             <% }) %>
         </div>
-        <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">Save Assignments</button>
-        <a href="/project/<%= project.project_id %>" style="margin-left: 10px; color: #555; text-decoration: none;">Cancel</a>
+
+        <button type="submit" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Save Assignments</button>
+        <a href="/project/<%= project.project_id %>" style="margin-left: 15px; color: #555; text-decoration: none;">Cancel</a>
     </form>
 </main>
 <%- include('partials/footer') %>

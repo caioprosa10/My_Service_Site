@@ -1,25 +1,30 @@
 <%- include('partials/header') %>
-<main class="container">
-    <h2><%= project.project_name %></h2>
-    <% if (success_msg && success_msg.length > 0) { %> <p style="color: green; font-weight: bold;"><%= success_msg %></p> <% } %>
+<main class="container" style="margin-top: 20px;">
+    <h2>Project: <%= project.project_name %></h2>
+    <p style="font-size: 1.1em; color: #333; margin: 15px 0;"><%= project.project_description %></p>
     
-    <p><%= project.description %></p>
-    
-    <div style="margin: 20px 0;">
-        <a href="/project/<%= project.project_id %>/assign-categories" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Update Categories</a>
+    <div style="background-color: #f1f1f1; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
+        <h3>Project Categories</h3>
+        <% if (categories && categories.length > 0) { %>
+            <ul style="padding-left: 20px;">
+                <% categories.forEach(category => { %>
+                    <li style="margin-bottom: 5px; font-weight: bold; color: #007bff;"><%= category.category_name %></li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p style="color: #666; font-style: italic;">No categories assigned to this project yet.</p>
+        <% } %>
+        
+        <div style="margin-top: 15px;">
+            <a href="/project/<%= project.project_id %>/assign-categories" style="display: inline-block; background-color: #6c757d; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;">
+                ⚙️ Manage Project Categories
+            </a>
+        </div>
     </div>
 
-    <div class="tags" style="margin-top: 20px;">
-        <strong>Category Tags:</strong>
-        <% if (categories.length > 0) { %>
-            <% categories.forEach(function(cat) { %>
-                <a href="/category/<%= cat.category_id %>" style="background: #eee; padding: 5px 10px; text-decoration: none; border-radius: 5px; margin-right: 5px;">
-                    <%= cat.category_name %>
-                </a>
-            <% }) %>
-        <% } else { %>
-            <span>No tags assigned.</span>
-        <% } %>
+    <div>
+        <a href="/edit-project/<%= project.project_id %>" style="color: #007bff; text-decoration: none; font-weight: bold;">Edit Project Details</a> | 
+        <a href="/projects" style="color: #555; text-decoration: none;">Back to Projects</a>
     </div>
 </main>
 <%- include('partials/footer') %>

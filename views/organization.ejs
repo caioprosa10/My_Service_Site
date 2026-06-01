@@ -1,19 +1,40 @@
 <%- include('partials/header') %>
-<main class="container">
-    <h2><%= organization.organization_name %></h2>
-    <p><%= organization.description %></p>
-    
-    <h3>Projects by this Organization:</h3>
-    <ul>
-        <% if (projects.length > 0) { %>
-            <% projects.forEach(function(project) { %>
-                <li>
-                    <a href="/project/<%= project.project_id %>"><%= project.project_name %></a>
-                </li>
-            <% }) %>
+<main class="container" style="margin-top: 20px;">
+    <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 25px; margin-bottom: 25px; overflow: hidden;">
+        <div style="float: left; margin-right: 30px; margin-bottom: 15px;">
+            <img src="/images/<%= organization.organization_image ? organization.organization_image : 'org1.jpg' %>" 
+                 alt="<%= organization.organization_name %>" 
+                 onerror="this.onerror=null; this.src='/images/org1.jpg';" 
+                 style="max-width: 220px; height: auto; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: #f9f9f9; display: block;">
+        </div>
+
+        <div style="overflow: hidden;">
+            <h2 style="margin-top: 0;"><%= organization.organization_name %></h2>
+            <p style="font-size: 1.1em; color: #444; line-height: 1.5; margin-top: 15px;"><%= organization.organization_description || 'No description available for this organization.' %></p>
+            <div style="margin-top: 20px;">
+                <a href="/edit-organization/<%= organization.organization_id %>" style="display: inline-block; background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;">✏️ Edit Organization Details</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h3>Projects by this Organization</h3>
+        <% if (projects && projects.length > 0) { %>
+            <ul style="padding-left: 20px; line-height: 1.8;">
+                <% projects.forEach(project => { %>
+                    <li style="margin-bottom: 10px;">
+                        <a href="/project/<%= project.project_id %>" style="font-weight: bold; color: #007bff; text-decoration: none;"><%= project.project_name %></a>
+                        <p style="margin: 2px 0 0 0; color: #666; font-size: 0.95em;"><%= project.description %></p>
+                    </li>
+                <% }) %>
+            </ul>
         <% } else { %>
-            <li>No projects currently listed for this organization.</li>
+            <p style="color: #666; font-style: italic;">This organization does not have any projects assigned yet.</p>
         <% } %>
-    </ul>
+    </div>
+
+    <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
+        <a href="/organizations" style="color: #555; text-decoration: none; font-weight: bold;">← Back to Organizations</a>
+    </div>
 </main>
 <%- include('partials/footer') %>

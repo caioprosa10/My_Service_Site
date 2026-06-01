@@ -1,7 +1,8 @@
 import { getCategories, getCategoryById, insertCategory, updateCategory } from '../models/categories.js';
 import { getProjectsByCategory } from '../models/projects.js';
+import { validationResult } from 'express-validator';
 
-export async function buildCategoriesPage(req, res) {
+export const buildCategoriesPage = async (req, res) => {
     try {
         const categoriesData = await getCategories(); 
         res.render('categories', { 
@@ -11,9 +12,9 @@ export async function buildCategoriesPage(req, res) {
     } catch (error) {
         res.status(500).send("Server Error");
     }
-}
+};
 
-export async function buildCategoryDetails(req, res) {
+export const buildCategoryDetails = async (req, res) => {
     try {
         const categoryId = req.params.id;
         const category = await getCategoryById(categoryId);
@@ -32,19 +33,20 @@ export async function buildCategoryDetails(req, res) {
     } catch (error) {
         res.status(500).send("Server Error");
     }
-}
+};
 
-export async function buildNewCategory(req, res) {
-    res.render('new-category', { pageTitle: "Create New Category" });
-}
+export const buildNewCategory = async (req, res) => {
+    res.render('new-category', { pageTitle: "Create New Category", error_msg: null });
+};
 
-export async function createCategory(req, res) {
+export const createCategory = async (req, res) => {
+    const errors = validationResult(req);
     const { category_name } = req.body;
     
-    if (!category_name || category_name.trim().length < 3 || category_name.trim().length > 100) {
-        req.flash('error_msg', 'Category name must be between 3 and 100 characters.');
+    if (!errors.isEmpty()) {
         return res.status(400).render('new-category', { 
             pageTitle: "Create New Category",
+            error_msg: errors.array()[0].msg,
             category_name: category_name 
         });
     }
@@ -54,12 +56,15 @@ export async function createCategory(req, res) {
         req.flash('success_msg', 'Category created successfully!');
         res.redirect('/categories');
     } catch (error) {
-        req.flash('error_msg', 'Error creating category.');
-        res.status(500).redirect('/new-category');
+        res.status(500).render('new-category', {
+            pageTitle: "Create New Category",
+            error_msg: "Database error creating category.",
+            category_name: category_name
+        });
     }
-}
+};
 
-export async function buildEditCategory(req, res) {
+export const buildEditCategory = async (req, res) => {
     try {
         const categoryId = req.params.id;
         const category = await getCategoryById(categoryId);
@@ -69,21 +74,23 @@ export async function buildEditCategory(req, res) {
         }
         res.render('edit-category', { 
             pageTitle: "Edit Category", 
-            category: category 
+            category: category,
+            error_msg: null
         });
     } catch (error) {
         res.status(500).send("Server Error");
     }
-}
+};
 
-export async function updateExistingCategory(req, res) {
+export const updateExistingCategory = async (req, res) => {
+    const errors = validationResult(req);
     const categoryId = req.params.id;
     const { category_name } = req.body;
 
-    if (!category_name || category_name.trim().length < 3 || category_name.trim().length > 100) {
-        req.flash('error_msg', 'Category name must be between 3 and 100 characters.');
+    if (!errors.isEmpty()) {
         return res.status(400).render('edit-category', { 
             pageTitle: "Edit Category", 
+            error_msg: errors.array()[0].msg,
             category: { category_id: categoryId, category_name: category_name } 
         });
     }
@@ -93,7 +100,10 @@ export async function updateExistingCategory(req, res) {
         req.flash('success_msg', 'Category updated successfully!');
         res.redirect('/categories');
     } catch (error) {
-        req.flash('error_msg', 'Error updating category.');
-        res.redirect(`/edit-category/${categoryId}`);
+        res.status(500).render('edit-category', {
+            pageTitle: "Edit Category",
+            error_msg: "Database error updating category.",
+            category: { category_id: categoryId, category_name: category_name }
+        });
     }
-}
+};
