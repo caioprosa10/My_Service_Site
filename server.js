@@ -15,7 +15,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// --- CONFIGURAÇÃO DE SESSÃO E FLASH MESSAGES (Obrigatório para a nota) ---
+// --- CONFIGURAÇÃO DE SESSÃO E FLASH MESSAGES ---
 app.use(session({
     secret: 'cse340_secret_key',
     resave: false,
@@ -23,10 +23,13 @@ app.use(session({
 }));
 app.use(flash());
 
-// Middleware: Repassa as mensagens de sucesso/erro para todas as telas (views)
+// Middleware: Repassa as mensagens de sucesso/erro e o USUÁRIO para todas as telas (views)
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
+    
+    // A MÁGICA DA W05 ESTÁ AQUI: Isso diz ao EJS se o usuário está logado!
+    res.locals.user = req.session.user || null; 
     next();
 });
 // --------------------------------------------------------------------------
@@ -34,7 +37,7 @@ app.use((req, res, next) => {
 // Conecta todas as rotas
 app.use('/', router);
 
-// --- PORTA E INICIALIZAÇÃO DO SERVIDOR (CORREÇÃO PARA O RENDER NÃO DESLIGAR) ---
+// --- PORTA E INICIALIZAÇÃO DO SERVIDOR ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

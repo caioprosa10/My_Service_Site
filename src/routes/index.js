@@ -1,78 +1,65 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { 
-    buildCategoriesPage, 
-    buildCategoryDetails, 
-    buildNewCategory, 
-    createCategory, 
-    buildEditCategory, 
-    updateExistingCategory 
-} from '../controllers/categoryController.js';
-import { 
-    buildProjectsPage, 
-    buildProjectDetails, 
-    buildAssignCategories, 
-    assignCategoriesToProject,
-    buildNewProject,
-    createProject,
-    buildEditProject,
-    updateExistingProject
-} from '../controllers/projectController.js';
-import { 
-    buildOrganizationsPage, 
-    buildOrganizationDetails,
-    buildNewOrganization,
-    createOrganization,
-    buildEditOrganization,
-    updateExistingOrganization
-} from '../controllers/organizationController.js';
+import { buildCategoriesPage, buildCategoryDetails, buildNewCategory, createCategory, buildEditCategory, updateExistingCategory } from '../controllers/categoryController.js';
+import { buildProjectsPage, buildProjectDetails, buildAssignCategories, assignCategoriesToProject, buildNewProject, createProject, buildEditProject, updateExistingProject } from '../controllers/projectController.js';
+import { buildOrganizationsPage, buildOrganizationDetails, buildNewOrganization, createOrganization, buildEditOrganization, updateExistingOrganization } from '../controllers/organizationController.js';
+import { buildRegister, registerUser, buildLogin, loginUser, logoutUser, buildDashboard, buildUsersPage } from '../controllers/userController.js';
+
+// IMPORTANDO OS CADEADOS DE SEGURANÇA
+import { requireLogin, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// --- CONFIGURAÇÃO DOS MIDDLEWARES DE VALIDAÇÃO (Critério 4) ---
-const categoryValidation = [
-    body('category_name').trim().isLength({ min: 3, max: 100 }).withMessage('Category name must be between 3 and 100 characters.')
-];
-
+const categoryValidation = [ body('category_name').trim().isLength({ min: 3, max: 100 }).withMessage('Category name must be between 3 and 100 characters.') ];
 const orgValidation = [
     body('organization_name').trim().isLength({ min: 3, max: 100 }).withMessage('Organization name must be between 3 and 100 characters.'),
     body('organization_description').trim().isLength({ min: 10 }).withMessage('Description must be at least 10 characters long.'),
     body('organization_image').trim().notEmpty().withMessage('Organization image filename or URL is required.')
 ];
-
 const projectValidation = [
     body('project_name').trim().isLength({ min: 3, max: 100 }).withMessage('Project name must be between 3 and 100 characters.'),
     body('project_description').trim().isLength({ min: 10 }).withMessage('Project description must be at least 10 characters long.'),
     body('organization_id').notEmpty().withMessage('Please select a valid partner organization.')
 ];
 
-// --- ROTAS DA HOME ---
+// --- ROTAS DA HOME E VISUALIZAÇÃO PÚBLICA (Qualquer um pode ver) ---
 router.get('/', (req, res) => res.render('home', { pageTitle: "Home" }));
-
-// --- ROTAS DE CATEGORIAS (Critérios 1 e 2) ---
 router.get('/categories', buildCategoriesPage);
-router.get('/new-category', buildNewCategory);
-router.post('/new-category', categoryValidation, createCategory);
-router.get('/edit-category/:id', buildEditCategory);
-router.post('/edit-category/:id', categoryValidation, updateExistingCategory);
 router.get('/category/:id', buildCategoryDetails);
-
-// --- ROTAS DE ORGANIZAÇÕES (Critérios 1 e 2) ---
 router.get('/organizations', buildOrganizationsPage);
-router.get('/new-organization', buildNewOrganization);
-router.post('/new-organization', orgValidation, createOrganization);
-router.get('/edit-organization/:id', buildEditOrganization);
-router.post('/edit-organization/:id', orgValidation, updateExistingOrganization);
 router.get('/organization/:id', buildOrganizationDetails);
-
-// --- ROTAS DE PROJETOS (Critério 3) ---
 router.get('/projects', buildProjectsPage);
-router.get('/new-project', buildNewProject);
-router.post('/new-project', projectValidation, createProject);
-router.get('/edit-project/:id', buildEditProject);
-router.post('/edit-project/:id', projectValidation, updateExistingProject);
-router.get('/project/:id/assign-categories', buildAssignCategories);
-router.post('/project/:id/assign-categories', assignCategoriesToProject);
 router.get('/project/:id', buildProjectDetails);
+
+// --- ROTAS DE AUTENTICAÇÃO E DASHBOARD ---
+router.get('/register', buildRegister);
+router.post('/register', registerUser);
+router.get('/login', buildLogin);
+router.post('/login', loginUser);
+router.get('/logout', logoutUser);
+router.get('/dashboard', requireLogin, buildDashboard);
+router.get('/users', requireLogin, requireRole('admin'), buildUsersPage);
+
+// --- ROTAS PROTEGIDAS: APENAS ADMINS PODEM CRIAR E EDITAR (CRITÉRIO 2) ---
+
+// Categorias
+router.get('/new-category', requireLogin, requireRole('admin'), buildNewCategory);
+router.post('/new-category', requireLogin, requireRole('admin'), categoryValidation, createCategory);
+router.get('/edit-category/:id', requireLogin, requireRole('admin'), buildEditCategory);
+router.post('/edit-category/:id', requireLogin, requireRole('admin'), categoryValidation, updateExistingCategory);
+
+// Organizações
+router.get('/new-organization', requireLogin, requireRole('admin'), buildNewOrganization);
+router.post('/new-organization', requireLogin, requireRole('admin'), orgValidation, createOrganization);
+router.get('/edit-organization/:id', requireLogin, requireRole('admin'), buildEditOrganization);
+router.post('/edit-organization/:id', requireLogin, requireRole('admin'), orgValidation, updateExistingOrganization);
+
+// Projetos
+router.get('/new-project', requireLogin, requireRole('admin'), buildNewProject);
+router.post('/new-project', requireLogin, requireRole('admin'), projectValidation, createProject);
+router.get('/edit-project/:id', requireLogin, requireRole('admin'), buildEditProject);
+router.post('/edit-project/:id', requireLogin, requireRole('admin'), projectValidation, updateExistingProject);
+router.get('/project/:id/assign-categories', requireLogin, requireRole('admin'), buildAssignCategories);
+router.post('/project/:id/assign-categories', requireLogin, requireRole('admin'), assignCategoriesToProject);
 
 export default router;

@@ -11,9 +11,12 @@
         <div style="overflow: hidden;">
             <h2 style="margin-top: 0;"><%= organization.organization_name %></h2>
             <p style="font-size: 1.1em; color: #444; line-height: 1.5; margin-top: 15px;"><%= organization.organization_description || 'No description available for this organization.' %></p>
-            <div style="margin-top: 20px;">
-                <a href="/edit-organization/<%= organization.organization_id %>" style="display: inline-block; background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;">✏️ Edit Organization Details</a>
-            </div>
+            
+            <% if (locals.user && locals.user.user_role === 'admin') { %>
+                <div style="margin-top: 20px;">
+                    <a href="/edit-organization/<%= organization.organization_id %>" style="display: inline-block; background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;">✏️ Edit Organization Details</a>
+                </div>
+            <% } %>
         </div>
     </div>
 

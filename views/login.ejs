@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<main class="container" style="margin-top: 20px;">
+    <h2><%= pageTitle %></h2>
+    
+    <% if (locals.error_msg && error_msg.length > 0) { %>
+        <p style="color: red; font-weight: bold; background-color: #f8d7da; padding: 10px; border-radius: 4px;"><%= error_msg %></p>
+    <% } %>
+    <% if (locals.success_msg && success_msg.length > 0) { %>
+        <p style="color: green; font-weight: bold; background-color: #d4edda; padding: 10px; border-radius: 4px;"><%= success_msg %></p>
+    <% } %>
+    
+    <form action="/login" method="POST" style="max-width: 400px; background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 6px;">
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Email:</label>
+            <input type="email" name="user_email" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Password:</label>
+            <input type="password" name="user_password" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;">Sign In</button>
+    </form>
+</main>
+<%- include('partials/footer') %>

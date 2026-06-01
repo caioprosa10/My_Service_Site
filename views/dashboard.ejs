@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<main class="container" style="margin-top: 20px;">
+    <h2><%= pageTitle %></h2>
+    <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %><p style="color: red; font-weight: bold; background-color: #f8d7da; padding: 10px; border-radius: 4px;"><%= error_msg %></p><% } %>
+    <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %><p style="color: green; font-weight: bold; background-color: #d4edda; padding: 10px; border-radius: 4px;"><%= success_msg %></p><% } %>
+    
+    <p style="font-size: 1.1em;">Welcome back to your control panel, <strong><%= locals.user.user_name %></strong>!</p>
+    
+    <% if (locals.user && locals.user.user_role === 'admin') { %>
+        <div style="margin-top: 30px; padding: 20px; background-color: #e9ecef; border-left: 5px solid #007bff; border-radius: 4px;">
+            <h3 style="margin-top: 0; color: #0056b3;">Admin Controls</h3>
+            <p>You have administrator privileges. You can manage system users here:</p>
+            <a href="/users" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;">👥 View All Users</a>
+        </div>
+    <% } %>
+</main>
+<%- include('partials/footer') %>

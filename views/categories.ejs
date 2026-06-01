@@ -1,16 +1,23 @@
 <%- include('partials/header') %>
-<main class="container">
+<main class="container" style="margin-top: 20px;">
     <h2><%= pageTitle %></h2>
-    <div class="category-list">
-        <ul>
-            <% categories.forEach(function(category) { %>
-                <li>
-                    <a href="/category/<%= category.category_id %>">
-                        <%= category.category_name %>
-                    </a>
-                </li>
-            <% }) %>
-        </ul>
+
+    <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-top: 20px;">
+        <% if (categories && categories.length > 0) { %>
+            <ul style="padding-left: 10px; list-style-type: none;">
+                <% categories.forEach(category => { %>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="/category/<%= category.category_id %>" style="font-weight: bold; color: #0056b3; text-decoration: none;"><%= category.category_name %></a>
+                        
+                        <% if (locals.user && locals.user.user_role === 'admin') { %>
+                            <a href="/edit-category/<%= category.category_id %>" style="color: #dc3545; text-decoration: none; font-size: 0.9em;">[Edit]</a>
+                        <% } %>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p style="color: #666; font-style: italic;">No categories found.</p>
+        <% } %>
     </div>
 </main>
 <%- include('partials/footer') %>

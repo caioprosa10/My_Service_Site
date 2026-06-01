@@ -15,15 +15,19 @@
             <p style="color: #666; font-style: italic;">No categories assigned to this project yet.</p>
         <% } %>
         
-        <div style="margin-top: 15px;">
-            <a href="/project/<%= project.project_id %>/assign-categories" style="display: inline-block; background-color: #6c757d; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;">
-                ⚙️ Manage Project Categories
-            </a>
-        </div>
+        <% if (locals.user && locals.user.user_role === 'admin') { %>
+            <div style="margin-top: 15px;">
+                <a href="/project/<%= project.project_id %>/assign-categories" style="display: inline-block; background-color: #6c757d; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;">
+                    ⚙️ Manage Project Categories
+                </a>
+            </div>
+        <% } %>
     </div>
 
     <div>
-        <a href="/edit-project/<%= project.project_id %>" style="color: #007bff; text-decoration: none; font-weight: bold;">Edit Project Details</a> | 
+        <% if (locals.user && locals.user.user_role === 'admin') { %>
+            <a href="/edit-project/<%= project.project_id %>" style="color: #007bff; text-decoration: none; font-weight: bold;">Edit Project Details</a> | 
+        <% } %>
         <a href="/projects" style="color: #555; text-decoration: none;">Back to Projects</a>
     </div>
 </main>
