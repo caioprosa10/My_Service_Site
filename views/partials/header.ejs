@@ -16,7 +16,7 @@
                 <a href="/projects">Projects</a>
                 <a href="/categories">Categories</a>
                 
-                <% if (locals.user && locals.user.user_role === 'admin') { %>
+                <% if (locals.user && locals.user.user_role.toLowerCase() === 'admin') { %>
                     <a href="/new-category" style="background-color: #007bff; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none;">+ Create Category</a>
                 <% } %>
                 

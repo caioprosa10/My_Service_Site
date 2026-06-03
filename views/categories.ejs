@@ -9,7 +9,7 @@
                     <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                         <a href="/category/<%= category.category_id %>" style="font-weight: bold; color: #0056b3; text-decoration: none;"><%= category.category_name %></a>
                         
-                        <% if (locals.user && locals.user.user_role === 'admin') { %>
+                        <% if (locals.user && locals.user.user_role.toLowerCase() === 'admin') { %>
                             <a href="/edit-category/<%= category.category_id %>" style="color: #dc3545; text-decoration: none; font-size: 0.9em;">[Edit]</a>
                         <% } %>
                     </li>

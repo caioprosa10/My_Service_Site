@@ -2,7 +2,7 @@
 <main class="container" style="margin-top: 20px;">
     <h2><%= pageTitle %></h2>
 
-    <% if (locals.user && locals.user.user_role === 'admin') { %>
+    <% if (locals.user && locals.user.user_role.toLowerCase() === 'admin') { %>
         <div style="margin-bottom: 20px;">
             <a href="/new-project" style="display: inline-block; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;">Add New Project</a>
         </div>
@@ -18,7 +18,7 @@
                             <p style="margin: 5px 0 0 0; color: #666;"><%= project.description %></p>
                         </div>
                         
-                        <% if (locals.user && locals.user.user_role === 'admin') { %>
+                        <% if (locals.user && locals.user.user_role.toLowerCase() === 'admin') { %>
                             <a href="/edit-project/<%= project.project_id %>" style="color: #dc3545; text-decoration: none; font-size: 0.9em;">[Edit]</a>
                         <% } %>
                     </li>
