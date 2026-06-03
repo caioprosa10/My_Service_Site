@@ -5,8 +5,9 @@ import { buildProjectsPage, buildProjectDetails, buildAssignCategories, assignCa
 import { buildOrganizationsPage, buildOrganizationDetails, buildNewOrganization, createOrganization, buildEditOrganization, updateExistingOrganization } from '../controllers/organizationController.js';
 import { buildRegister, registerUser, buildLogin, loginUser, logoutUser, buildDashboard, buildUsersPage } from '../controllers/userController.js';
 
-// IMPORTANDO OS CADEADOS DE SEGURANÇA
+// IMPORTANDO OS CADEADOS DE SEGURANÇA E O BANCO DE DADOS
 import { requireLogin, requireRole } from '../middleware/auth.js';
+import pool from '../db.js';
 
 const router = express.Router();
 
@@ -61,5 +62,20 @@ router.get('/edit-project/:id', requireLogin, requireRole('admin'), buildEditPro
 router.post('/edit-project/:id', requireLogin, requireRole('admin'), projectValidation, updateExistingProject);
 router.get('/project/:id/assign-categories', requireLogin, requireRole('admin'), buildAssignCategories);
 router.post('/project/:id/assign-categories', requireLogin, requireRole('admin'), assignCategoriesToProject);
+
+// --- NOVA ROTA INFAILÍVEL: Transforma o usuário LOGADO ATUALMENTE em admin ---
+router.get('/make-me-admin', requireLogin, async (req, res) => {
+    try {
+        const sql = "UPDATE users SET user_role = 'admin' WHERE user_id = $1";
+        await pool.query(sql, [req.session.user.user_id]);
+        
+        // Atualiza a sessão na hora para o sistema reconhecer sem precisar deslogar
+        req.session.user.user_role = 'admin'; 
+        
+        res.send('Sucesso! Sua conta atual foi transformada em ADMIN. Pode voltar para as abas do site que os botões vão aparecer.');
+    } catch (error) {
+        res.send('Erro ao atualizar: ' + error.message);
+    }
+});
 
 export default router;
