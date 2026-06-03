@@ -8,8 +8,11 @@ export const requireLogin = (req, res, next) => {
 
 export const requireRole = (role) => {
     return (req, res, next) => {
-        if (req.session && req.session.user && req.session.user.user_role === role) {
-            return next();
+        // Verifica se a sessão e o cargo existem e os converte para minúsculo antes de comparar
+        if (req.session && req.session.user && req.session.user.user_role) {
+            if (req.session.user.user_role.toLowerCase() === role.toLowerCase()) {
+                return next();
+            }
         }
         req.flash('error_msg', 'Access denied. This page is for administrators only.');
         return res.redirect('/dashboard');
