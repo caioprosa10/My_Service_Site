@@ -5,9 +5,8 @@ import { buildProjectsPage, buildProjectDetails, buildAssignCategories, assignCa
 import { buildOrganizationsPage, buildOrganizationDetails, buildNewOrganization, createOrganization, buildEditOrganization, updateExistingOrganization } from '../controllers/organizationController.js';
 import { buildRegister, registerUser, buildLogin, loginUser, logoutUser, buildDashboard, buildUsersPage } from '../controllers/userController.js';
 
-// IMPORTANDO OS CADEADOS DE SEGURANÇA E O BANCO DE DADOS
+// IMPORTANDO OS CADEADOS DE SEGURANÇA
 import { requireLogin, requireRole } from '../middleware/auth.js';
-import pool from '../db.js';
 
 const router = express.Router();
 
@@ -41,7 +40,7 @@ router.get('/logout', logoutUser);
 router.get('/dashboard', requireLogin, buildDashboard);
 router.get('/users', requireLogin, requireRole('admin'), buildUsersPage);
 
-// --- ROTAS PROTEGIDAS: APENAS ADMINS PODEM CRIAR E EDITAR (CRITÉRIO 2) ---
+// --- ROTAS PROTEGIDAS: APENAS ADMINS PODEM CRIAR E EDITAR ---
 
 // Categorias
 router.get('/new-category', requireLogin, requireRole('admin'), buildNewCategory);
@@ -62,16 +61,5 @@ router.get('/edit-project/:id', requireLogin, requireRole('admin'), buildEditPro
 router.post('/edit-project/:id', requireLogin, requireRole('admin'), projectValidation, updateExistingProject);
 router.get('/project/:id/assign-categories', requireLogin, requireRole('admin'), buildAssignCategories);
 router.post('/project/:id/assign-categories', requireLogin, requireRole('admin'), assignCategoriesToProject);
-
-// --- ROTA TEMPORÁRIA PARA TRANSFORMAR O PROFESSOR EM ADMIN ---
-router.get('/make-admin', async (req, res) => {
-    try {
-        const sql = "UPDATE users SET user_role = 'admin' WHERE user_email = 'admin@example.com'";
-        await pool.query(sql);
-        res.send('Sucesso! O usuário agora é um admin. Você já pode apagar esta rota do seu código.');
-    } catch (error) {
-        res.send('Erro ao atualizar: ' + error.message);
-    }
-});
 
 export default router;
