@@ -43,27 +43,33 @@ export const createOrganization = async (req, res) => {
     const errors = validationResult(req);
     const { organization_name, organization_description, organization_image } = req.body;
     
+    // Proteção contra valores vazios quebrando o servidor com .trim()
+    const name = organization_name ? organization_name.trim() : '';
+    const desc = organization_description ? organization_description.trim() : '';
+    const img = organization_image ? organization_image.trim() : 'org1.jpg';
+    
     if (!errors.isEmpty()) {
         return res.status(400).render('new-organization', { 
             pageTitle: "Create New Organization",
             error_msg: errors.array()[0].msg,
-            organization_name,
-            organization_description,
-            organization_image
+            organization_name: name,
+            organization_description: desc,
+            organization_image: img
         });
     }
 
     try {
-        await insertOrganization(organization_name.trim(), organization_description.trim(), organization_image.trim());
+        await insertOrganization(name, desc, img);
         req.flash('success_msg', 'Organization created successfully!');
         res.redirect('/organizations');
     } catch (error) {
+        console.error("Database error creating:", error);
         res.status(500).render('new-organization', {
             pageTitle: "Create New Organization",
             error_msg: "Database error creating organization.",
-            organization_name,
-            organization_description,
-            organization_image
+            organization_name: name,
+            organization_description: desc,
+            organization_image: img
         });
     }
 };
@@ -91,23 +97,29 @@ export const updateExistingOrganization = async (req, res) => {
     const orgId = req.params.id;
     const { organization_name, organization_description, organization_image } = req.body;
 
+    // Proteção contra valores vazios quebrando o servidor com .trim()
+    const name = organization_name ? organization_name.trim() : '';
+    const desc = organization_description ? organization_description.trim() : '';
+    const img = organization_image ? organization_image.trim() : 'org1.jpg';
+
     if (!errors.isEmpty()) {
         return res.status(400).render('edit-organization', { 
             pageTitle: "Edit Organization", 
             error_msg: errors.array()[0].msg,
-            organization: { organization_id: orgId, organization_name, organization_description, organization_image } 
+            organization: { organization_id: orgId, organization_name: name, organization_description: desc, organization_image: img } 
         });
     }
 
     try {
-        await updateOrganization(orgId, organization_name.trim(), organization_description.trim(), organization_image.trim());
+        await updateOrganization(orgId, name, desc, img);
         req.flash('success_msg', 'Organization updated successfully!');
         res.redirect('/organizations');
     } catch (error) {
+        console.error("Database error updating:", error);
         res.status(500).render('edit-organization', {
             pageTitle: "Edit Organization",
             error_msg: "Database error updating organization.",
-            organization: { organization_id: orgId, organization_name, organization_description, organization_image }
+            organization: { organization_id: orgId, organization_name: name, organization_description: desc, organization_image: img }
         });
     }
 };

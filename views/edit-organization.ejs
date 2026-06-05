@@ -1,13 +1,18 @@
 <%- include('partials/header') %>
 <main class="container">
     <h2><%= pageTitle %></h2>
+    
     <% if (error_msg) { %>
         <p style="color: red; font-weight: bold; background-color: #f8d7da; padding: 10px; border-radius: 4px;"><%= error_msg %></p>
     <% } %>
 
     <div style="margin: 20px 0;">
         <p style="font-weight: bold; margin-bottom: 5px;">Current Logo:</p>
-        <img src="/images/<%= organization.organization_image ? organization.organization_image : 'org1.jpg' %>" 
+        <% 
+            let imagePath = organization.organization_image || 'org1.jpg';
+            let imgSrc = imagePath.startsWith('http') ? imagePath : '/images/' + imagePath;
+        %>
+        <img src="<%= imgSrc %>" 
              alt="Organization Logo" 
              onerror="this.onerror=null; this.src='/images/org1.jpg';" 
              style="max-width: 180px; height: auto; border: 1px solid #ddd; padding: 5px; border-radius: 4px; background-color: #f9f9f9;">
@@ -25,8 +30,9 @@
         </div>
 
         <div style="margin-bottom: 15px;">
-            <label for="organization_image" style="display: block; font-weight: bold; margin-bottom: 5px;">Image Filename:</label>
+            <label for="organization_image" style="display: block; font-weight: bold; margin-bottom: 5px;">Image Filename (or URL):</label>
             <input type="text" id="organization_image" name="organization_image" value="<%= organization.organization_image || 'org1.jpg' %>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <small style="color: #666;">Example: <em>org2.jpg</em> or <em>http://link-to-image.png</em></small>
         </div>
 
         <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Update Organization</button>
