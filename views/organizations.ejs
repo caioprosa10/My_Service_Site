@@ -18,9 +18,23 @@
     <div class="organizations-list">
         <% if (organizations && organizations.length > 0) { %>
             <% organizations.forEach(org => { %>
+                <% 
+                    // NOVA LÓGICA INTELIGENTE DE IMAGENS
+                    let finalImage = '/images/org1.jpg'; // Começa com a imagem padrão
+                    if (org.organization_image && org.organization_image.trim() !== '') {
+                        let imgStr = org.organization_image.trim();
+                        if (imgStr.startsWith('http')) {
+                            finalImage = imgStr; // É um link da internet
+                        } else if (imgStr.startsWith('/images/')) {
+                            finalImage = imgStr; // Já está com a pasta certa
+                        } else {
+                            finalImage = '/images/' + imgStr; // É um arquivo local (adiciona a pasta)
+                        }
+                    }
+                %>
                 <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 15px; display: block; overflow: hidden;">
                     <div style="float: left; margin-right: 20px; margin-bottom: 10px;">
-                        <img src="<%= org.organization_image && org.organization_image.startsWith('http') ? org.organization_image : '/images/' + (org.organization_image || 'org1.jpg') %>" 
+                        <img src="<%= finalImage %>" 
                              alt="<%= org.organization_name %>" 
                              onerror="this.onerror=null; this.src='/images/org1.jpg';" 
                              style="max-width: 150px; height: auto; border: 1px solid #eee; border-radius: 4px; padding: 4px; background: #fff; display: block; object-fit: contain;">
