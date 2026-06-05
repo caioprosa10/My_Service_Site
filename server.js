@@ -3,9 +3,10 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import router from './routes/index.js';
 
-// CORREÇÃO: Variáveis com os DOIS underlines (__) exatamente iguais
+// AQUI ESTÁ A CORREÇÃO: O caminho exato onde as suas rotas estão guardadas!
+import router from './src/routes/index.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
