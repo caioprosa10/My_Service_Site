@@ -4,9 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { Pool } = pkg;
 
+// AQUI ESTÁ A CORREÇÃO: Forçando a criptografia (SSL) que o Render estava pedindo
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
+    require: true,
     rejectUnauthorized: false
   }
 });
@@ -15,8 +17,7 @@ pool.on('error', (err) => {
   console.error('Erro inesperado no banco de dados:', err);
 });
 
-// --- MÁGICA DE RECONSTRUÇÃO DO BANCO DE DADOS ---
-// Se o banco estiver vazio, ele recria tudo perfeitamente na hora que o servidor liga!
+// A mágica que vai recriar as tabelas assim que conectar
 const buildDatabase = async () => {
     try {
         const sql = `
@@ -61,6 +62,5 @@ const buildDatabase = async () => {
 };
 
 buildDatabase();
-// ------------------------------------------------
 
 export default pool;
