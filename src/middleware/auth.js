@@ -1,3 +1,4 @@
+// W05 - Protected Access: Exige que o usuário esteja logado
 export const requireLogin = (req, res, next) => {
     if (req.session && req.session.user) {
         return next();
@@ -7,6 +8,7 @@ export const requireLogin = (req, res, next) => {
     }
 };
 
+// W05 - Protected Access: Exige permissão de Admin (Organizações, Projetos, Categorias e Users)
 export const requireRole = (role) => {
     return (req, res, next) => {
         if (req.session && req.session.user && req.session.user.user_role) {
@@ -14,7 +16,7 @@ export const requireRole = (role) => {
                 return next();
             }
         }
-        req.flash('error_msg', 'You do not have permission to access this area.');
+        req.flash('error_msg', 'Access denied. You do not have admin permissions.');
         return res.redirect('/dashboard');
     };
 };
