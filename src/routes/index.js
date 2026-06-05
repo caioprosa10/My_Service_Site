@@ -6,6 +6,7 @@ import { buildOrganizationsPage, buildOrganizationDetails, buildNewOrganization,
 import { buildRegister, registerUser, buildLogin, loginUser, logoutUser, buildDashboard, buildUsersPage } from '../controllers/userController.js';
 
 import { requireLogin, requireRole } from '../middleware/auth.js';
+import pool from '../db.js'; // Importante para a rota de correção do banco funcionar
 
 const router = express.Router();
 
@@ -67,6 +68,21 @@ router.get('/make-me-admin', (req, res) => {
         res.send('MÁGICA FEITA! Você agora é um Admin. Pode voltar para o site e atualizar a página.');
     } else {
         res.send('Erro: Faça o login normal no site primeiro.');
+    }
+});
+
+// --- RETA FINAL: ROTA PARA ADICIONAR A COLUNA FALTANTE NO BANCO ---
+router.get('/fix-db-columns', async (req, res) => {
+    try {
+        // Esse comando adiciona a coluna organization_image na tabela se ela não existir
+        const sql = `
+            ALTER TABLE organizations 
+            ADD COLUMN IF NOT EXISTS organization_image VARCHAR(255);
+        `;
+        await pool.query(sql);
+        res.send('SUCESSO TOTAL! A coluna organization_image foi criada no banco de dados. Pode voltar e testar a edição das imagens!');
+    } catch (error) {
+        res.send('Erro ao atualizar o banco: ' + error.message);
     }
 });
 
