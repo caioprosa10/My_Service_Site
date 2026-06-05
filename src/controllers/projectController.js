@@ -43,9 +43,11 @@ export const createProject = async (req, res) => {
     }
     try {
         await insertProject(project_name.trim(), project_description.trim(), organization_id);
+        req.flash('success_msg', 'Project created successfully!');
         res.redirect('/projects');
     } catch (error) {
-        res.status(500).send("Server Error");
+        req.flash('error_msg', 'Error creating project.');
+        res.redirect('/new-project');
     }
 };
 
@@ -63,17 +65,19 @@ export const updateExistingProject = async (req, res) => {
     const errors = validationResult(req);
     const { project_name, project_description, organization_id } = req.body;
     if (!errors.isEmpty()) {
-        return res.status(400).render('edit-project', { pageTitle: "Edit Project", error_msg: errors.array()[0].msg, project: { project_id: req.params.id, project_name, project_description, organization_id } });
+        const orgs = await getOrganizations();
+        return res.status(400).render('edit-project', { pageTitle: "Edit Project", organizations: orgs, error_msg: errors.array()[0].msg, project: { project_id: req.params.id, project_name, project_description, organization_id } });
     }
     try {
         await updateProject(req.params.id, project_name.trim(), project_description.trim(), organization_id);
+        req.flash('success_msg', 'Project updated successfully!');
         res.redirect('/projects');
     } catch (error) {
-        res.status(500).send("Server Error");
+        req.flash('error_msg', 'Error updating project.');
+        res.redirect(`/edit-project/${req.params.id}`);
     }
 };
 
-// --- MECANISMO DE ASSOCIAÇÃO DE CATEGORIAS (Critério 3) ---
 export const buildAssignCategories = async (req, res) => {
     try {
         const projectId = req.params.id;
@@ -97,18 +101,20 @@ export const buildAssignCategories = async (req, res) => {
 
 export const assignCategoriesToProject = async (req, res) => {
     const projectId = req.params.id;
-    let { categories } = req.body; // Array contendo os IDs selecionados
+    let { categories } = req.body;
 
     if (!categories) categories = [];
     if (!Array.isArray(categories)) categories = [categories];
 
     try {
-        await deleteProjectCategories(projectId); // Limpa as associações anteriores
+        await deleteProjectCategories(projectId);
         for (const catId of categories) {
-            await insertProjectCategory(projectId, catId); // Insere as novas relações
+            await insertProjectCategory(projectId, catId);
         }
+        req.flash('success_msg', 'Categories assigned successfully!');
         res.redirect(`/project/${projectId}`);
     } catch (error) {
-        res.status(500).send("Server Error");
+        req.flash('error_msg', 'Error assigning categories.');
+        res.redirect(`/project/${projectId}/assign-categories`);
     }
 };

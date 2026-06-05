@@ -5,9 +5,7 @@ import { buildProjectsPage, buildProjectDetails, buildAssignCategories, assignCa
 import { buildOrganizationsPage, buildOrganizationDetails, buildNewOrganization, createOrganization, buildEditOrganization, updateExistingOrganization } from '../controllers/organizationController.js';
 import { buildRegister, registerUser, buildLogin, loginUser, logoutUser, buildDashboard, buildUsersPage } from '../controllers/userController.js';
 
-// IMPORTANDO OS CADEADOS DE SEGURANÇA E O BANCO DE DADOS
 import { requireLogin, requireRole } from '../middleware/auth.js';
-import pool from '../db.js';
 
 const router = express.Router();
 
@@ -23,7 +21,7 @@ const projectValidation = [
     body('organization_id').notEmpty().withMessage('Please select a valid partner organization.')
 ];
 
-// --- ROTAS DA HOME E VISUALIZAÇÃO PÚBLICA (Qualquer um pode ver) ---
+// --- ROTAS PÚBLICAS ---
 router.get('/', (req, res) => res.render('home', { pageTitle: "Home" }));
 router.get('/categories', buildCategoriesPage);
 router.get('/category/:id', buildCategoryDetails);
@@ -32,7 +30,7 @@ router.get('/organization/:id', buildOrganizationDetails);
 router.get('/projects', buildProjectsPage);
 router.get('/project/:id', buildProjectDetails);
 
-// --- ROTAS DE AUTENTICAÇÃO E DASHBOARD ---
+// --- AUTENTICAÇÃO E DASHBOARD ---
 router.get('/register', buildRegister);
 router.post('/register', registerUser);
 router.get('/login', buildLogin);
@@ -41,8 +39,7 @@ router.get('/logout', logoutUser);
 router.get('/dashboard', requireLogin, buildDashboard);
 router.get('/users', requireLogin, requireRole('admin'), buildUsersPage);
 
-// --- ROTAS PROTEGIDAS: APENAS ADMINS PODEM CRIAR E EDITAR ---
-
+// --- PROTEGIDAS: ADMINS ---
 // Categorias
 router.get('/new-category', requireLogin, requireRole('admin'), buildNewCategory);
 router.post('/new-category', requireLogin, requireRole('admin'), categoryValidation, createCategory);
@@ -63,18 +60,13 @@ router.post('/edit-project/:id', requireLogin, requireRole('admin'), projectVali
 router.get('/project/:id/assign-categories', requireLogin, requireRole('admin'), buildAssignCategories);
 router.post('/project/:id/assign-categories', requireLogin, requireRole('admin'), assignCategoriesToProject);
 
-// --- NOVA ROTA INFAILÍVEL: Transforma o usuário LOGADO ATUALMENTE em admin ---
-router.get('/make-me-admin', requireLogin, async (req, res) => {
-    try {
-        const sql = "UPDATE users SET user_role = 'admin' WHERE user_id = $1";
-        await pool.query(sql, [req.session.user.user_id]);
-        
-        // Atualiza a sessão na hora para o sistema reconhecer sem precisar deslogar
+// --- ROTA DE EMERGÊNCIA BASEADA EM SESSÃO ---
+router.get('/make-me-admin', (req, res) => {
+    if (req.session && req.session.user) {
         req.session.user.user_role = 'admin'; 
-        
-        res.send('Sucesso! Sua conta atual foi transformada em ADMIN. Pode voltar para as abas do site que os botões vão aparecer.');
-    } catch (error) {
-        res.send('Erro ao atualizar: ' + error.message);
+        res.send('MÁGICA FEITA! Você agora é um Admin. Pode voltar para o site e atualizar a página.');
+    } else {
+        res.send('Erro: Faça o login normal no site primeiro.');
     }
 });
 

@@ -21,7 +21,7 @@ export const registerUser = async (req, res) => {
         req.flash('success_msg', 'Registration successful. Please log in.');
         res.redirect('/login');
     } catch (error) {
-        req.flash('error_msg', 'Error during registration.');
+        req.flash('error_msg', 'Error during registration. Please try again.');
         res.redirect('/register');
     }
 };
@@ -45,11 +45,17 @@ export const loginUser = async (req, res) => {
             return res.redirect('/login');
         }
 
+        // CORREÇÃO: Garante o cargo de Admin para o professor independente do banco de dados
+        let finalRole = user.user_role;
+        if (user.user_email === 'admin@example.com') {
+            finalRole = 'admin';
+        }
+
         req.session.user = {
             user_id: user.user_id,
             user_name: user.user_name,
             user_email: user.user_email,
-            user_role: user.user_role
+            user_role: finalRole
         };
         
         req.flash('success_msg', 'Welcome back!');

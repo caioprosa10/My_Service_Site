@@ -2,7 +2,8 @@ import pool from '../db.js';
 
 export const insertUser = async (name, email, hashedPassword) => {
     try {
-        const sql = "INSERT INTO users (user_name, user_email, user_password) VALUES ($1, $2, $3) RETURNING user_id, user_name, user_email, user_role";
+        // CORREÇÃO: Inserindo 'Client' como cargo padrão para evitar o erro de null constraint
+        const sql = "INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ($1, $2, $3, 'Client') RETURNING user_id, user_name, user_email, user_role";
         const result = await pool.query(sql, [name, email, hashedPassword]);
         return result.rows[0];
     } catch (error) {
