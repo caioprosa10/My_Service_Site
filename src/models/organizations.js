@@ -1,18 +1,5 @@
 import pool from '../db.js';
 
-// --- A MÁGICA AUTOCURÁVEL ---
-// Esta função roda sozinha quando o servidor liga e garante que a coluna exista!
-const garantirColunaNoBanco = async () => {
-    try {
-        await pool.query("ALTER TABLE organizations ADD COLUMN IF NOT EXISTS organization_image VARCHAR(255);");
-        console.log("Sucesso: Coluna organization_image garantida no banco de dados!");
-    } catch (error) {
-        console.log("Aviso: " + error.message);
-    }
-};
-garantirColunaNoBanco();
-// -----------------------------
-
 export const getOrganizations = async () => {
     try {
         const sql = "SELECT * FROM organizations ORDER BY organization_name";
