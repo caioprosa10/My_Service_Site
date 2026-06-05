@@ -1,3 +1,52 @@
+/* Importando a fonte Inter (a mais parecida com a Apple SF Pro) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Variáveis de Cores e Medidas Premium */
+:root {
+    --bg-color: #f5f5f7; 
+    --text-color: #1d1d1f; 
+    --link-color: #0066cc; 
+    --link-hover: #004499;
+    --card-bg: #ffffff;
+    --border-radius: 24px; /* Tudo BEM arredondado agora */
+    --input-border: #d2d2d7;
+    --apple-blue: #0071e3;
+    --header-bg: rgba(22, 22, 23, 0.85); /* Preto/Cinza escuro clássico do menu Apple */
+}
+
+/* Base e Tipografia */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+}
+
+/* Animações Premium (Surgindo de baixo para cima suavemente) */
+@keyframes fadeAndScale {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.container {
+    width: 90%;
+    max-width: 980px; 
+    margin: 30px auto;
+    overflow: hidden;
+    padding: 20px;
+    animation: fadeAndScale 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
 /* Header Oficial Apple (Ponta a Ponta) */
 header {
     background: var(--header-bg); /* Fundo preto/cinza escuro */
@@ -37,4 +86,130 @@ header a {
 header a:hover {
     color: #ffffff;
     opacity: 0.7; /* Efeito fade característico em vez de mudar o fundo */
+}
+
+/* Listas e Cards Flutuantes */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: var(--card-bg);
+    margin-bottom: 24px;
+    padding: 35px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03), 0 1px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Animação espetacular ao passar o mouse no Card */
+li:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Links em geral */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+/* Design de Formulários (Inputs e Textareas) estilo iOS */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+textarea {
+    width: 100%;
+    padding: 16px 20px;
+    margin: 8px 0 24px 0;
+    border: 1px solid var(--input-border);
+    border-radius: 16px; 
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 17px; 
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, 
+input[type="email"]:focus, 
+input[type="password"]:focus, 
+textarea:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+}
+
+/* Botões Estilo "Buy" Oficial */
+button, 
+input[type="submit"], 
+.btn {
+    background-color: var(--apple-blue);
+    color: white;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 980px; 
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 113, 227, 0.2);
+}
+
+button:hover, 
+input[type="submit"]:hover, 
+.btn:hover {
+    background-color: #005bb5;
+    box-shadow: 0 6px 15px rgba(0, 113, 227, 0.3);
+    transform: translateY(-1px);
+}
+
+button:active, 
+input[type="submit"]:active, 
+.btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(0, 113, 227, 0.2);
+}
+
+/* Tags Estilo "Pílula" (iOS Badges) */
+.tag-link {
+    background: #e8e8ed;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 20px; 
+    margin-right: 8px;
+    font-size: 0.85rem;
+    color: #1d1d1f;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.tag-link:hover {
+    background: #1d1d1f; /* Fica escuro ao passar o mouse */
+    color: #ffffff;
+    transform: scale(1.05); 
+}
+
+/* Imagens com cantos bem arredondados */
+img {
+    border-radius: 20px;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.4s ease;
+}
+
+img:hover {
+    transform: scale(1.02);
 }
