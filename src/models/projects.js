@@ -48,10 +48,10 @@ export const getProjectsByOrganization = async (orgId) => {
     }
 };
 
-export const insertProject = async (projectName, description, organizationId) => {
+export const insertProject = async (projectName, description, organizationId, location, projectDate) => {
     try {
-        const sql = "INSERT INTO projects (project_name, description, organization_id) VALUES ($1, $2, $3) RETURNING *";
-        const result = await pool.query(sql, [projectName, description, organizationId]);
+        const sql = "INSERT INTO projects (project_name, description, organization_id, location, project_date) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+        const result = await pool.query(sql, [projectName, description, organizationId, location, projectDate]);
         return result.rows[0];
     } catch (error) {
         console.error("Erro ao inserir projeto:", error);
@@ -59,18 +59,16 @@ export const insertProject = async (projectName, description, organizationId) =>
     }
 };
 
-export const updateProject = async (projectId, projectName, description, organizationId) => {
+export const updateProject = async (projectId, projectName, description, organizationId, location, projectDate) => {
     try {
-        const sql = "UPDATE projects SET project_name = $1, description = $2, organization_id = $3 WHERE project_id = $4 RETURNING *";
-        const result = await pool.query(sql, [projectName, description, organizationId, projectId]);
+        const sql = "UPDATE projects SET project_name = $1, description = $2, organization_id = $3, location = $4, project_date = $5 WHERE project_id = $6 RETURNING *";
+        const result = await pool.query(sql, [projectName, description, organizationId, location, projectDate, projectId]);
         return result.rows[0];
     } catch (error) {
         console.error("Erro ao atualizar projeto:", error);
         throw error; 
     }
 };
-
-// --- FUNÇÕES NOVAS PARA ATENDER AO CRITÉRIO 3 (Adicionar/Remover Categorias do Projeto) ---
 
 export const getProjectCategories = async (projectId) => {
     try {

@@ -41,25 +41,25 @@ export const buildNewOrganization = async (req, res) => {
 
 export const createOrganization = async (req, res) => {
     const errors = validationResult(req);
-    const { organization_name, organization_description, organization_image } = req.body;
+    const { organization_name, organization_email, organization_description } = req.body;
     
-    // Proteção contra valores vazios quebrando o servidor com .trim()
     const name = organization_name ? organization_name.trim() : '';
+    const email = organization_email ? organization_email.trim() : '';
     const desc = organization_description ? organization_description.trim() : '';
-    const img = organization_image ? organization_image.trim() : 'org1.jpg';
+    const img = 'org1.jpg';
     
     if (!errors.isEmpty()) {
         return res.status(400).render('new-organization', { 
             pageTitle: "Create New Organization",
             error_msg: errors.array()[0].msg,
             organization_name: name,
-            organization_description: desc,
-            organization_image: img
+            organization_email: email,
+            organization_description: desc
         });
     }
 
     try {
-        await insertOrganization(name, desc, img);
+        await insertOrganization(name, email, desc, img);
         req.flash('success_msg', 'Organization created successfully!');
         res.redirect('/organizations');
     } catch (error) {
@@ -68,8 +68,8 @@ export const createOrganization = async (req, res) => {
             pageTitle: "Create New Organization",
             error_msg: "Database error creating organization.",
             organization_name: name,
-            organization_description: desc,
-            organization_image: img
+            organization_email: email,
+            organization_description: desc
         });
     }
 };
@@ -95,10 +95,10 @@ export const buildEditOrganization = async (req, res) => {
 export const updateExistingOrganization = async (req, res) => {
     const errors = validationResult(req);
     const orgId = req.params.id;
-    const { organization_name, organization_description, organization_image } = req.body;
+    const { organization_name, organization_email, organization_description, organization_image } = req.body;
 
-    // Proteção contra valores vazios quebrando o servidor com .trim()
     const name = organization_name ? organization_name.trim() : '';
+    const email = organization_email ? organization_email.trim() : '';
     const desc = organization_description ? organization_description.trim() : '';
     const img = organization_image ? organization_image.trim() : 'org1.jpg';
 
@@ -106,12 +106,12 @@ export const updateExistingOrganization = async (req, res) => {
         return res.status(400).render('edit-organization', { 
             pageTitle: "Edit Organization", 
             error_msg: errors.array()[0].msg,
-            organization: { organization_id: orgId, organization_name: name, organization_description: desc, organization_image: img } 
+            organization: { organization_id: orgId, organization_name: name, organization_email: email, organization_description: desc, organization_image: img } 
         });
     }
 
     try {
-        await updateOrganization(orgId, name, desc, img);
+        await updateOrganization(orgId, name, email, desc, img);
         req.flash('success_msg', 'Organization updated successfully!');
         res.redirect('/organizations');
     } catch (error) {
@@ -119,7 +119,7 @@ export const updateExistingOrganization = async (req, res) => {
         res.status(500).render('edit-organization', {
             pageTitle: "Edit Organization",
             error_msg: "Database error updating organization.",
-            organization: { organization_id: orgId, organization_name: name, organization_description: desc, organization_image: img }
+            organization: { organization_id: orgId, organization_name: name, organization_email: email, organization_description: desc, organization_image: img }
         });
     }
-};
+};//

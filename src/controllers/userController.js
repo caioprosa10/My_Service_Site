@@ -45,7 +45,6 @@ export const loginUser = async (req, res) => {
             return res.redirect('/login');
         }
 
-        // CORREÇÃO: Garante o cargo de Admin para o professor independente do banco de dados
         let finalRole = user.user_role;
         if (user.user_email === 'admin@example.com') {
             finalRole = 'admin';

@@ -12,14 +12,13 @@
         </div>
 
         <div style="margin-bottom: 15px;">
-            <label for="organization_description" style="display: block; font-weight: bold; margin-bottom: 5px;">Description:</label>
-            <textarea id="organization_description" name="organization_description" required style="width: 100%; padding: 8px; height: 100px; border: 1px solid #ccc; border-radius: 4px;"><%= typeof organization_description != 'undefined' ? organization_description : '' %></textarea>
+            <label for="organization_email" style="display: block; font-weight: bold; margin-bottom: 5px;">Contact Email:</label>
+            <input type="email" id="organization_email" name="organization_email" value="<%= typeof organization_email != 'undefined' ? organization_email : '' %>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
         </div>
 
         <div style="margin-bottom: 15px;">
-            <label for="organization_image" style="display: block; font-weight: bold; margin-bottom: 5px;">Organization Image (filename or path):</label>
-            <input type="text" id="organization_image" name="organization_image" value="<%= typeof organization_image != 'undefined' ? organization_image : 'org1.jpg' %>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-            <small style="color: #666;">Example: org1.jpg, org2.jpg, org3.jpg</small>
+            <label for="organization_description" style="display: block; font-weight: bold; margin-bottom: 5px;">Description:</label>
+            <textarea id="organization_description" name="organization_description" required style="width: 100%; padding: 8px; height: 100px; border: 1px solid #ccc; border-radius: 4px;"><%= typeof organization_description != 'undefined' ? organization_description : '' %></textarea>
         </div>
 
         <button type="submit" style="padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Create Organization</button>

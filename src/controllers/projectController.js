@@ -36,13 +36,23 @@ export const buildNewProject = async (req, res) => {
 
 export const createProject = async (req, res) => {
     const errors = validationResult(req);
-    const { project_name, project_description, organization_id } = req.body;
+    const { project_name, project_description, organization_id, location, project_date } = req.body;
+    
     if (!errors.isEmpty()) {
         const orgs = await getOrganizations();
-        return res.status(400).render('new-project', { pageTitle: "Create New Project", organizations: orgs, error_msg: errors.array()[0].msg, project_name, project_description, organization_id });
+        return res.status(400).render('new-project', { 
+            pageTitle: "Create New Project", 
+            organizations: orgs, 
+            error_msg: errors.array()[0].msg, 
+            project_name, 
+            project_description, 
+            organization_id, 
+            location, 
+            project_date 
+        });
     }
     try {
-        await insertProject(project_name.trim(), project_description.trim(), organization_id);
+        await insertProject(project_name.trim(), project_description.trim(), organization_id, location.trim(), project_date);
         req.flash('success_msg', 'Project created successfully!');
         res.redirect('/projects');
     } catch (error) {
@@ -63,13 +73,19 @@ export const buildEditProject = async (req, res) => {
 
 export const updateExistingProject = async (req, res) => {
     const errors = validationResult(req);
-    const { project_name, project_description, organization_id } = req.body;
+    const { project_name, project_description, organization_id, location, project_date } = req.body;
+    
     if (!errors.isEmpty()) {
         const orgs = await getOrganizations();
-        return res.status(400).render('edit-project', { pageTitle: "Edit Project", organizations: orgs, error_msg: errors.array()[0].msg, project: { project_id: req.params.id, project_name, project_description, organization_id } });
+        return res.status(400).render('edit-project', { 
+            pageTitle: "Edit Project", 
+            organizations: orgs, 
+            error_msg: errors.array()[0].msg, 
+            project: { project_id: req.params.id, project_name, project_description, organization_id, location, project_date } 
+        });
     }
     try {
-        await updateProject(req.params.id, project_name.trim(), project_description.trim(), organization_id);
+        await updateProject(req.params.id, project_name.trim(), project_description.trim(), organization_id, location.trim(), project_date);
         req.flash('success_msg', 'Project updated successfully!');
         res.redirect('/projects');
     } catch (error) {
