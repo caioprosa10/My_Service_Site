@@ -1,7 +1,7 @@
 import express from 'express';
 import { body } from 'express-validator';
 import { buildCategoriesPage, buildCategoryDetails, buildNewCategory, createCategory, buildEditCategory, updateExistingCategory } from '../controllers/categoryController.js';
-import { buildProjectsPage, buildProjectDetails, buildAssignCategories, assignCategoriesToProject, buildNewProject, createProject, buildEditProject, updateExistingProject } from '../controllers/projectController.js';
+import { buildProjectsPage, buildProjectDetails, buildAssignCategories, assignCategoriesToProject, buildNewProject, createProject, buildEditProject, updateExistingProject, volunteerForProject, unvolunteerFromProject } from '../controllers/projectController.js';
 import { buildOrganizationsPage, buildOrganizationDetails, buildNewOrganization, createOrganization, buildEditOrganization, updateExistingOrganization } from '../controllers/organizationController.js';
 import { buildRegister, registerUser, buildLogin, loginUser, logoutUser, buildDashboard, buildUsersPage } from '../controllers/userController.js';
 
@@ -39,6 +39,10 @@ router.post('/login', loginUser);
 router.get('/logout', logoutUser);
 router.get('/dashboard', requireLogin, buildDashboard);
 router.get('/users', requireLogin, requireRole('admin'), buildUsersPage);
+
+// --- VOLUNTARIADO (REQUER LOGIN) ---
+router.post('/project/:id/volunteer', requireLogin, volunteerForProject);
+router.post('/project/:id/unvolunteer', requireLogin, unvolunteerFromProject);
 
 // --- PROTEGIDAS: ADMINS ---
 // Categorias

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { insertUser, getUserByEmail, getAllUsers } from '../models/users.js';
+import { getVolunteeredProjects } from '../models/volunteers.js';
 
 export const buildRegister = async (req, res) => {
     res.render('register', { pageTitle: 'Register', error_msg: null });
@@ -71,7 +72,19 @@ export const logoutUser = (req, res) => {
 };
 
 export const buildDashboard = async (req, res) => {
-    res.render('dashboard', { pageTitle: 'Dashboard' });
+    try {
+        const userId = req.session.user.user_id;
+        // Busca os projetos que o usuário é voluntário
+        const volunteeredProjects = await getVolunteeredProjects(userId);
+
+        res.render('dashboard', { 
+            pageTitle: 'Dashboard',
+            volunteeredProjects 
+        });
+    } catch (error) {
+        req.flash('error_msg', 'Error loading dashboard.');
+        res.redirect('/');
+    }
 };
 
 export const buildUsersPage = async (req, res) => {

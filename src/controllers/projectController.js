@@ -1,6 +1,7 @@
 import { getProjects, getProjectById, insertProject, updateProject, deleteProjectCategories, insertProjectCategory, getProjectCategories } from '../models/projects.js';
 import { getOrganizations } from '../models/organizations.js';
 import { getCategories } from '../models/categories.js';
+import { addVolunteer, removeVolunteer, checkVolunteer } from '../models/volunteers.js';
 import { validationResult } from 'express-validator';
 
 export const buildProjectsPage = async (req, res) => {
@@ -19,7 +20,19 @@ export const buildProjectDetails = async (req, res) => {
         if (!project) return res.status(404).render('404', { pageTitle: "Not Found" });
         
         const assignedCategories = await getProjectCategories(projectId);
-        res.render('project', { pageTitle: project.project_name, project, categories: assignedCategories });
+        
+        // Verifica se o usuário está logado e se é voluntário
+        let isVolunteered = false;
+        if (req.session && req.session.user) {
+            isVolunteered = await checkVolunteer(req.session.user.user_id, projectId);
+        }
+
+        res.render('project', { 
+            pageTitle: project.project_name, 
+            project, 
+            categories: assignedCategories,
+            isVolunteered
+        });
     } catch (error) {
         res.status(500).send("Server Error");
     }
@@ -132,5 +145,40 @@ export const assignCategoriesToProject = async (req, res) => {
     } catch (error) {
         req.flash('error_msg', 'Error assigning categories.');
         res.redirect(`/project/${projectId}/assign-categories`);
+    }
+};
+
+// --- FUNÇÕES DE VOLUNTARIADO ---
+export const volunteerForProject = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.session.user.user_id;
+        
+        await addVolunteer(userId, projectId);
+        req.flash('success_msg', 'You are now volunteering for this project!');
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        req.flash('error_msg', 'Error signing up as a volunteer.');
+        res.redirect(`/project/${req.params.id}`);
+    }
+};
+
+export const unvolunteerFromProject = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.session.user.user_id;
+        
+        await removeVolunteer(userId, projectId);
+        req.flash('success_msg', 'You are no longer volunteering for this project.');
+        
+        const referer = req.get('Referrer');
+        if (referer && referer.includes('/dashboard')) {
+            res.redirect('/dashboard');
+        } else {
+            res.redirect(`/project/${projectId}`);
+        }
+    } catch (error) {
+        req.flash('error_msg', 'Error removing volunteer status.');
+        res.redirect(`/project/${req.params.id}`);
     }
 };
