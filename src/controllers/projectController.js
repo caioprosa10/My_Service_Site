@@ -21,19 +21,28 @@ export const buildProjectDetails = async (req, res) => {
         
         const assignedCategories = await getProjectCategories(projectId);
         
-        // Verifica se o usuário está logado e se é voluntário
         let isVolunteered = false;
+        let user = null;
         if (req.session && req.session.user) {
-            isVolunteered = await checkVolunteer(req.session.user.user_id, projectId);
+            user = req.session.user;
+            isVolunteered = await checkVolunteer(user.user_id, projectId);
         }
+
+        // Proteção que evita o crash da tela
+        const success_msg = typeof req.flash === 'function' ? req.flash('success_msg') : [];
+        const error_msg = typeof req.flash === 'function' ? req.flash('error_msg') : [];
 
         res.render('project', { 
             pageTitle: project.project_name, 
             project, 
             categories: assignedCategories,
-            isVolunteered
+            isVolunteered,
+            user,
+            success_msg,
+            error_msg
         });
     } catch (error) {
+        console.error("Erro no buildProjectDetails:", error);
         res.status(500).send("Server Error");
     }
 };
@@ -155,10 +164,10 @@ export const volunteerForProject = async (req, res) => {
         const userId = req.session.user.user_id;
         
         await addVolunteer(userId, projectId);
-        req.flash('success_msg', 'You are now volunteering for this project!');
+        if(typeof req.flash === 'function') req.flash('success_msg', 'You are now volunteering for this project!');
         res.redirect(`/project/${projectId}`);
     } catch (error) {
-        req.flash('error_msg', 'Error signing up as a volunteer.');
+        if(typeof req.flash === 'function') req.flash('error_msg', 'Error signing up as a volunteer.');
         res.redirect(`/project/${req.params.id}`);
     }
 };
@@ -169,7 +178,7 @@ export const unvolunteerFromProject = async (req, res) => {
         const userId = req.session.user.user_id;
         
         await removeVolunteer(userId, projectId);
-        req.flash('success_msg', 'You are no longer volunteering for this project.');
+        if(typeof req.flash === 'function') req.flash('success_msg', 'You are no longer volunteering for this project.');
         
         const referer = req.get('Referrer');
         if (referer && referer.includes('/dashboard')) {
@@ -178,7 +187,7 @@ export const unvolunteerFromProject = async (req, res) => {
             res.redirect(`/project/${projectId}`);
         }
     } catch (error) {
-        req.flash('error_msg', 'Error removing volunteer status.');
+        if(typeof req.flash === 'function') req.flash('error_msg', 'Error removing volunteer status.');
         res.redirect(`/project/${req.params.id}`);
     }
 };

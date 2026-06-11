@@ -2,8 +2,8 @@
 <main class="container">
     <h2><%= pageTitle %></h2>
 
-    <% if (success_msg && success_msg.length > 0) { %><p style="color: green; font-weight: bold;"><%= success_msg %></p><% } %>
-    <% if (error_msg && error_msg.length > 0) { %><p style="color: red; font-weight: bold;"><%= error_msg %></p><% } %>
+    <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %><p style="color: green; font-weight: bold;"><%= success_msg %></p><% } %>
+    <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %><p style="color: red; font-weight: bold;"><%= error_msg %></p><% } %>
 
     <div style="margin-bottom: 20px;">
         <p><strong>Description:</strong> <%= project.description || project.project_description %></p>
@@ -16,7 +16,7 @@
     </div>
 
     <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; text-align: center; border: 1px solid #ddd;">
-        <% if (locals.user) { %>
+        <% if ((typeof locals !== 'undefined' && locals.user) || (typeof user !== 'undefined' && user)) { %>
             <% if (typeof isVolunteered !== 'undefined' && isVolunteered) { %>
                 <h4 style="color: #28a745; margin-bottom: 10px;">✓ You are volunteering for this project.</h4>
                 <form action="/project/<%= project.project_id %>/unvolunteer" method="POST">

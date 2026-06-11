@@ -73,16 +73,19 @@ export const logoutUser = (req, res) => {
 
 export const buildDashboard = async (req, res) => {
     try {
-        const userId = req.session.user.user_id;
-        // Busca os projetos que o usuário é voluntário
-        const volunteeredProjects = await getVolunteeredProjects(userId);
+        const user = req.session.user;
+        const volunteeredProjects = await getVolunteeredProjects(user.user_id);
+
+        const success_msg = typeof req.flash === 'function' ? req.flash('success_msg') : [];
 
         res.render('dashboard', { 
             pageTitle: 'Dashboard',
-            volunteeredProjects 
+            volunteeredProjects,
+            user,
+            success_msg
         });
     } catch (error) {
-        req.flash('error_msg', 'Error loading dashboard.');
+        console.error("Erro no dashboard:", error);
         res.redirect('/');
     }
 };
