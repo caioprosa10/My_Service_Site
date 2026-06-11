@@ -90,4 +90,21 @@ router.get('/fix-db-columns', async (req, res) => {
     }
 });
 
+// --- ROTA MÁGICA PARA CRIAR A TABELA VOLUNTEERS NO RENDER ---
+router.get('/create-volunteers-table', async (req, res) => {
+    try {
+        const sql = `
+            CREATE TABLE IF NOT EXISTS volunteers (
+                user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+                project_id INT REFERENCES projects(project_id) ON DELETE CASCADE,
+                PRIMARY KEY (user_id, project_id)
+            );
+        `;
+        await pool.query(sql);
+        res.send('SUCESSO ABSOLUTO! A tabela volunteers foi criada no Render. Pode voltar para o site e testar os botões!');
+    } catch (error) {
+        res.send('Erro ao criar a tabela: ' + error.message);
+    }
+});
+
 export default router;
