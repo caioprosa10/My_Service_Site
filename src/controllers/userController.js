@@ -73,20 +73,46 @@ export const logoutUser = (req, res) => {
 
 export const buildDashboard = async (req, res) => {
     try {
+        // Verifica se a sessão realmente existe, se não, manda pro login
+        if (!req.session || !req.session.user) {
+            if (typeof req.flash === 'function') req.flash('error_msg', 'Please log in to view your dashboard.');
+            return res.redirect('/login');
+        }
+
         const user = req.session.user;
-        const volunteeredProjects = await getVolunteeredProjects(user.user_id);
+        
+        // Inicializa a lista vazia por padrão para evitar crashes
+        let volunteeredProjects = [];
+        
+        // Tenta buscar no modelo de voluntários com segurança
+        try {
+            if (user && user.user_id) {
+                volunteeredProjects = await getVolunteeredProjects(user.user_id);
+            }
+        } catch (dbError) {
+            console.error("Erro ao buscar projetos voluntários no DB:", dbError);
+        }
 
         const success_msg = typeof req.flash === 'function' ? req.flash('success_msg') : [];
 
+        // Renderiza a página passando TODAS as variáveis de forma segura
         res.render('dashboard', { 
             pageTitle: 'Dashboard',
-            volunteeredProjects,
-            user,
-            success_msg
+            volunteeredProjects: volunteeredProjects || [],
+            user: user,
+            success_msg: success_msg
         });
     } catch (error) {
-        console.error("Erro no dashboard:", error);
-        res.redirect('/');
+        // Mostra o erro real no terminal do VS Code / Render Logs
+        console.error("Erro crítico no dashboard:", error);
+        
+        // Em último caso, tenta renderizar com dados vazios em vez de quebrar a tela
+        res.render('dashboard', { 
+            pageTitle: 'Dashboard', 
+            volunteeredProjects: [], 
+            user: req.session?.user || { user_name: 'User', user_role: 'user' },
+            success_msg: [] 
+        });
     }
 };
 
@@ -95,7 +121,7 @@ export const buildUsersPage = async (req, res) => {
         const usersList = await getAllUsers();
         res.render('users', { pageTitle: "System Users", users: usersList });
     } catch (error) {
-        req.flash('error_msg', 'Error fetching users.');
+        if (typeof req.flash === 'function') req.flash('error_msg', 'Error fetching users.');
         res.redirect('/dashboard');
     }
 };
