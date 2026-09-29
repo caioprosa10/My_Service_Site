@@ -1,5 +1,7 @@
 import express from 'express';
 import session from 'express-session';
+import crypto from 'crypto';
+import 'dotenv/config';
 import flash from 'connect-flash';
 import router from './src/routes/index.js';
 
@@ -17,7 +19,8 @@ app.use(express.json());
 
 // --- CONFIGURAÇÃO DE SESSÃO E FLASH MESSAGES (Obrigatório para a nota) ---
 app.use(session({
-    secret: 'cse340_secret_key',
+    // Segredo vem da variável de ambiente SESSION_SECRET; sem ela, gera um aleatório a cada início.
+    secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
     resave: false,
     saveUninitialized: false
 }));
