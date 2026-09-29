@@ -1,9 +1,10 @@
+import 'dotenv/config';
 import pkg from 'pg';
 const { Pool } = pkg;
 
-// Substitua o texto abaixo pela sua External Database URL do Render!
+// A URL do banco vem da variável de ambiente DATABASE_URL (arquivo .env, fora do Git).
 const pool = new Pool({
-  connectionString: "postgresql://myservicesite_db_user:yFNlHIBTLhNuGU8Isween10Mh1t5rZON@dpg-d82d5gn7f7vs73a9d5u0-a.oregon-postgres.render.com/myservicesite_db",
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
